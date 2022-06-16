@@ -78,7 +78,7 @@ function waitForService() {
 function testCompositeCreated() {
 
     # Expect that the Product Composite for productId $PROD_ID_REVS_RECS has been created with three recommendations and three reviews
-    if ! assertCurl 200 "curl http://$HOST:$PORT/product-composite/$PROD_ID_REVS_RECS -s"
+    if ! assertCurl 200 "curl -k $AUTH https://$HOST:$PORT/product-composite/$PROD_ID_REVS_RECS -s"
     then
         echo -n "FAIL"
         return 1
@@ -88,9 +88,6 @@ function testCompositeCreated() {
 function recreateComposite() {
     local productId=$1
     local composite=$2
-
-    # assertCurl 200 "curl -X DELETE https://$HOST:$PORT/product-composite/${productId} -s"
-    # curl -X POST http://$HOST:$PORT/product-composite -H "Content-Type: application/json" --data "$composite"
 
     assertCurl 202 "curl -X DELETE $AUTH -k https://$HOST:$PORT/product-composite/${productId} -s"
     assertEqual 202 $(curl -X POST -s -k https://$HOST:$PORT/product-composite -H "Content-Type: application/json" -H "Authorization: Bearer $ACCESS_TOKEN" --data "$composite" -w "%{http_code}")
@@ -107,9 +104,12 @@ function setupTestdata() {
 
       echo "Creating entry for product ID = $n..."
 
+      product_name="Widget #$n"
+      weight=$((n*10))
+
       body="{\"productId\":$n"
       body+=\
-',"name":"product name C","weight":300, "recommendations":[
+',"name":"'$product_name'","weight":'$weight', "recommendations":[
         {"recommendationId":1,"author":"author 1","rate":1,"content":"content 1"},
         {"recommendationId":2,"author":"author 2","rate":2,"content":"content 2"},
         {"recommendationId":3,"author":"author 3","rate":3,"content":"content 3"}
@@ -118,6 +118,7 @@ function setupTestdata() {
         {"reviewId":2,"author":"author 2","subject":"subject 2","content":"content 2"},
         {"reviewId":3,"author":"author 3","subject":"subject 3","content":"content 3"}
     ]}'
+
       recreateComposite $n "$body"
 
       n=$((n + 1))
@@ -162,6 +163,7 @@ waitForService curl -k https://$HOST:$PORT/actuator/health
 ACCESS_TOKEN=$(curl -k https://writer:secret@$HOST:$PORT/oauth2/token -d grant_type=client_credentials -s | jq .access_token -r)
 echo ACCESS_TOKEN=$ACCESS_TOKEN
 AUTH="-H \"Authorization: Bearer $ACCESS_TOKEN\""
+echo AUTH=$AUTH
 
 setupTestdata
 
