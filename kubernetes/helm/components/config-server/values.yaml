@@ -27,7 +27,7 @@ configmap:
 
 service:
   ports:
-  - port: 8888
-    targetPort: http
-    protocol: TCP
-    name: http
+    - port: 8888
+      targetPort: http
+      protocol: TCP
+      name: http

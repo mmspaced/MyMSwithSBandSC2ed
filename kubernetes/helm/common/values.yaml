@@ -40,12 +40,12 @@ configmap:
 
 resources:
   limits:
-    memory: 350Mi
+    memory: 512Mi
 
 service:
   type: ClusterIP
   ports:
-  - port: 80
-    targetPort: http
-    protocol: TCP
-    name: http
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
