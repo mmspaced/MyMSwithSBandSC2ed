@@ -1,13 +1,24 @@
 secrets:
-
   config-server-secrets:
     ENCRYPT_KEY: my-very-secure-encrypt-key
     SPRING_SECURITY_USER_NAME: prod-usr
     SPRING_SECURITY_USER_PASSWORD: prod-pwd
+    # SPRING_SECURITY_USER_NAME: dev-usr
+    # SPRING_SECURITY_USER_PASSWORD: dev-pwd
 
   config-client-credentials:
     CONFIG_SERVER_USR: prod-usr
     CONFIG_SERVER_PWD: prod-pwd
+    # CONFIG_SERVER_USR: dev-usr
+    # CONFIG_SERVER_PWD: dev-pwd
+
+# Added the MySQL credentials because it now runs as a container within Minikube
+mysql:
+  env:
+    MYSQL_ROOT_PASSWORD: rootpwd
+    MYSQL_DATABASE: review-db
+    MYSQL_USER: user
+    MYSQL_PASSWORD: pwd
 
 config-server:
   image:
@@ -100,13 +111,12 @@ product-composite:
       memory: 200Mi
     limits:
       memory: 400Mi
-
-zipkin-server:
-  env:
-    LOGGING_LEVEL_ROOT: WARN
-    RABBIT_ADDRESSES: 172.17.0.1
-  resources:
-    requests:
-      memory: 300Mi
-    limits:
-      memory: 600Mi
+# zipkin-server:
+#   env:
+#     LOGGING_LEVEL_ROOT: WARN
+#     RABBIT_ADDRESSES: 127.0.0.1
+#   resources:
+#     requests:
+#       memory: 300Mi
+#     limits:
+#       memory: 600Mi

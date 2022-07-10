@@ -239,6 +239,9 @@ echo "Start Tests: $(date)"
 
 echo "HOST=${HOST}"
 echo "PORT=${PORT}"
+echo "CONFIG_SERVER_USR=${CONFIG_SERVER_USR}"
+echo "CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}"
+
 echo "USE_K8S=${USE_K8S}"
 echo "SKIP_CB_TESTS=${SKIP_CB_TESTS}"
 

@@ -1,4 +1,3 @@
-
 app:
   auth-server: localhost
 
@@ -46,7 +45,8 @@ spring.zipkin.sender.type: kafka
 
 ---
 spring.config.activate.on-profile: prod
-spring.rabbitmq.host: 172.17.0.1
+# spring.rabbitmq.host: 127.0.0.1
+
 
 # Only allow management endpoints over http in production for info, health and circuitbreakerevents
 management.endpoints.web.exposure.include: health,info,circuitbreakerevents

@@ -5,10 +5,24 @@ name: prod-env
 version: 1.0.0
 
 dependencies:
-
   - name: common
     version: 1.0.0
     repository: file://../../common
+
+  # Added RabbitMQ, MongoDB, and MySQL because these containers need to run
+  # in Minikube with all the other components
+
+  - name: rabbitmq
+    version: 1.0.0
+    repository: file://../../components/rabbitmq
+
+  - name: mongodb
+    version: 1.0.0
+    repository: file://../../components/mongodb
+
+  - name: mysql
+    version: 1.0.0
+    repository: file://../../components/mysql
 
   - name: config-server
     version: 1.0.0

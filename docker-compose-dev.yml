@@ -71,12 +71,14 @@ services:
 
   mysql:
     image: arm64v8/mysql:8.0.29-oracle
+    platform: linux/arm64/v8
+    restart: always
     mem_limit: 512m
     ports:
       - "3306:3306"
     environment:
-      # - MYSQL_ROOT_PASSWORD=rootpwd
-      - MYSQL_ROOT_PASSWORD=rootpwd1
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      # - MYSQL_ROOT_PASSWORD=rootpwd1
       - MYSQL_DATABASE=review-db
       - MYSQL_USER=user
       - MYSQL_PASSWORD=pwd

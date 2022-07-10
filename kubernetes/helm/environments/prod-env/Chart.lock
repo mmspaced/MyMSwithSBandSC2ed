@@ -2,6 +2,15 @@ dependencies:
 - name: common
   repository: file://../../common
   version: 1.0.0
+- name: rabbitmq
+  repository: file://../../components/rabbitmq
+  version: 1.0.0
+- name: mongodb
+  repository: file://../../components/mongodb
+  version: 1.0.0
+- name: mysql
+  repository: file://../../components/mysql
+  version: 1.0.0
 - name: config-server
   repository: file://../../components/config-server
   version: 1.0.0
@@ -26,5 +35,5 @@ dependencies:
 - name: zipkin-server
   repository: file://../../components/zipkin-server
   version: 1.0.0
-digest: sha256:ab7a7952dfed4259c4a6c1e54f210c9b4a4374b8bde1b501b9013f0bad1818af
-generated: "2021-04-29T13:45:33.879089+02:00"
+digest: sha256:8735dd5d242e8438f0bfadd87eb1c91e8d731a87152c9a3b7c3daa3dec864667
+generated: "2022-07-09T18:29:23.65107-04:00"

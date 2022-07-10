@@ -1,5 +1,4 @@
 secrets:
-
   config-server-secrets:
     ENCRYPT_KEY: my-very-secure-encrypt-key
     SPRING_SECURITY_USER_NAME: dev-usr
@@ -41,6 +40,8 @@ review:
     - config-client-credentials
 
 product-composite:
+  env:
+    # This was used temporarily for testing purpose in Chapter 16.
+    # RESILIENCE4J_TIMELIMITER_INSTANCES_PRODUCT_TIMEOUTDURATION: 20s
   envFromSecretRefs:
     - config-client-credentials
-
