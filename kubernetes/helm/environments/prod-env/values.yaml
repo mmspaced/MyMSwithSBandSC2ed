@@ -1,51 +1,50 @@
+ingress:
+  host: minikube.me
+  paths:
+    - path: /oauth2
+      service: auth-server
+    - path: /login
+      service: auth-server
+    - path: /error
+      service: auth-server
+    - path: /product-composite
+      service: product-composite
+    - path: /actuator/health
+      service: product-composite
+    - path: /openapi
+      service: product-composite
+    - path: /webjars
+      service: product-composite
+
 secrets:
-  config-server-secrets:
-    ENCRYPT_KEY: my-very-secure-encrypt-key
-    SPRING_SECURITY_USER_NAME: prod-usr
-    SPRING_SECURITY_USER_PASSWORD: prod-pwd
-    # SPRING_SECURITY_USER_NAME: dev-usr
-    # SPRING_SECURITY_USER_PASSWORD: dev-pwd
+  rabbitmq-credentials:
+    SPRING_RABBITMQ_USERNAME: rabbit-user-prod
+    SPRING_RABBITMQ_PASSWORD: rabbit-pwd-prod
 
-  config-client-credentials:
-    CONFIG_SERVER_USR: prod-usr
-    CONFIG_SERVER_PWD: prod-pwd
-    # CONFIG_SERVER_USR: dev-usr
-    # CONFIG_SERVER_PWD: dev-pwd
+  rabbitmq-zipkin-credentials:
+    RABBIT_USER: rabbit-user-prod
+    RABBIT_PASSWORD: rabbit-pwd-prod
 
-# Added the MySQL credentials because it now runs as a container within Minikube
+  mongodb-credentials:
+    SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: admin
+    SPRING_DATA_MONGODB_USERNAME: mongodb-user-prod
+    SPRING_DATA_MONGODB_PASSWORD: mongodb-pwd-prod
+
+  mysql-credentials:
+    SPRING_DATASOURCE_USERNAME: mysql-user-prod
+    SPRING_DATASOURCE_PASSWORD: mysql-pwd-prod
+
+rabbitmq:
+  envFromSecretRefs:
+    - rabbitmq-server-credentials
+
+mongodb:
+  envFromSecretRefs:
+    - mongodb-server-credentials
+
 mysql:
-  env:
-    MYSQL_ROOT_PASSWORD: rootpwd
-    MYSQL_DATABASE: review-db
-    MYSQL_USER: user
-    MYSQL_PASSWORD: pwd
-
-config-server:
-  image:
-    tag: v1
-  env:
-    LOGGING_LEVEL_ROOT: WARN
-    MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info"
   envFromSecretRefs:
-    - config-server-secrets
-  resources:
-    requests:
-      memory: 200Mi
-    limits:
-      memory: 400Mi
-
-gateway:
-  image:
-    tag: v1
-  env:
-    SPRING_PROFILES_ACTIVE: "docker,prod"
-  envFromSecretRefs:
-    - config-client-credentials
-  resources:
-    requests:
-      memory: 200Mi
-    limits:
-      memory: 400Mi
+    - mysql-server-credentials
 
 auth-server:
   image:
@@ -53,7 +52,7 @@ auth-server:
   env:
     SPRING_PROFILES_ACTIVE: "docker,prod"
   envFromSecretRefs:
-    - config-client-credentials
+    - rabbitmq-credentials
   resources:
     requests:
       memory: 200Mi
@@ -66,7 +65,8 @@ product:
   env:
     SPRING_PROFILES_ACTIVE: "docker,prod"
   envFromSecretRefs:
-    - config-client-credentials
+    - rabbitmq-credentials
+    - mongodb-credentials
   resources:
     requests:
       memory: 200Mi
@@ -79,7 +79,8 @@ recommendation:
   env:
     SPRING_PROFILES_ACTIVE: "docker,prod"
   envFromSecretRefs:
-    - config-client-credentials
+    - rabbitmq-credentials
+    - mongodb-credentials
   resources:
     requests:
       memory: 200Mi
@@ -92,7 +93,8 @@ review:
   env:
     SPRING_PROFILES_ACTIVE: "docker,prod"
   envFromSecretRefs:
-    - config-client-credentials
+    - rabbitmq-credentials
+    - mysql-credentials
   resources:
     requests:
       memory: 200Mi
@@ -105,7 +107,7 @@ product-composite:
   env:
     SPRING_PROFILES_ACTIVE: "docker,prod"
   envFromSecretRefs:
-    - config-client-credentials
+    - rabbitmq-credentials
   resources:
     requests:
       memory: 200Mi
@@ -114,7 +116,9 @@ product-composite:
 # zipkin-server:
 #   env:
 #     LOGGING_LEVEL_ROOT: WARN
-#     RABBIT_ADDRESSES: 127.0.0.1
+#     # RABBIT_ADDRESSES: 172.17.0.1
+#   envFromSecretRefs:
+#     - rabbitmq-zipkin-credentials
 #   resources:
 #     requests:
 #       memory: 300Mi

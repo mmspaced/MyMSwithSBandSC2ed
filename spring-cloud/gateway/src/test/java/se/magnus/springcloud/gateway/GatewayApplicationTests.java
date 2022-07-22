@@ -5,11 +5,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(
-  webEnvironment = RANDOM_PORT,
-  properties = {
-    "spring.security.oauth2.resourceserver.jwt.jwk-set-uri=some-url",
-    "spring.cloud.config.enabled=false"})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+    "spring.security.oauth2.resourceserver.jwt.jwk-set-uri=some-url" })
+// , "spring.cloud.config.enabled=false"})
 class GatewayApplicationTests {
 
   @Test

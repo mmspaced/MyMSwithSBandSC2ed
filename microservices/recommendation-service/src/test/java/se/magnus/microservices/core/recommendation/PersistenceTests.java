@@ -16,8 +16,7 @@ import se.magnus.microservices.core.recommendation.persistence.RecommendationEnt
 import se.magnus.microservices.core.recommendation.persistence.RecommendationRepository;
 
 @DataMongoTest(
-  excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class,
-  properties = {"spring.cloud.config.enabled=false"})
+  excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 class PersistenceTests extends MongoDbTestBase {
 
   @Autowired

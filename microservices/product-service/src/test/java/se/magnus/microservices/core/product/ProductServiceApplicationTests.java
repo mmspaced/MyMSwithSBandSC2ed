@@ -21,8 +21,7 @@ import se.magnus.api.exceptions.InvalidInputException;
 import se.magnus.microservices.core.product.persistence.ProductRepository;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-  "spring.sleuth.mongodb.enabled=false",
-  "spring.cloud.config.enabled=false"})
+    "spring.sleuth.mongodb.enabled=false" })
 class ProductServiceApplicationTests extends MongoDbTestBase {
 
   @Autowired
@@ -46,15 +45,15 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
     int productId = 1;
 
     assertNull(repository.findByProductId(productId).block());
-    assertEquals(0, (long)repository.count().block());
+    assertEquals(0, (long) repository.count().block());
 
     sendCreateProductEvent(productId);
 
     assertNotNull(repository.findByProductId(productId).block());
-    assertEquals(1, (long)repository.count().block());
+    assertEquals(1, (long) repository.count().block());
 
     getAndVerifyProduct(productId, OK)
-      .jsonPath("$.productId").isEqualTo(productId);
+        .jsonPath("$.productId").isEqualTo(productId);
   }
 
   @Test
@@ -69,9 +68,9 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
     assertNotNull(repository.findByProductId(productId).block());
 
     InvalidInputException thrown = assertThrows(
-      InvalidInputException.class,
-      () -> sendCreateProductEvent(productId),
-      "Expected a InvalidInputException here!");
+        InvalidInputException.class,
+        () -> sendCreateProductEvent(productId),
+        "Expected a InvalidInputException here!");
     assertEquals("Duplicate key, Product Id: " + productId, thrown.getMessage());
   }
 
@@ -93,8 +92,8 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
   void getProductInvalidParameterString() {
 
     getAndVerifyProduct("/no-integer", BAD_REQUEST)
-      .jsonPath("$.path").isEqualTo("/product/no-integer")
-      .jsonPath("$.message").isEqualTo("Type mismatch.");
+        .jsonPath("$.path").isEqualTo("/product/no-integer")
+        .jsonPath("$.message").isEqualTo("Type mismatch.");
   }
 
   @Test
@@ -102,8 +101,8 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
 
     int productIdNotFound = 13;
     getAndVerifyProduct(productIdNotFound, NOT_FOUND)
-      .jsonPath("$.path").isEqualTo("/product/" + productIdNotFound)
-      .jsonPath("$.message").isEqualTo("No product found for productId: " + productIdNotFound);
+        .jsonPath("$.path").isEqualTo("/product/" + productIdNotFound)
+        .jsonPath("$.message").isEqualTo("No product found for productId: " + productIdNotFound);
   }
 
   @Test
@@ -112,8 +111,8 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
     int productIdInvalid = -1;
 
     getAndVerifyProduct(productIdInvalid, UNPROCESSABLE_ENTITY)
-      .jsonPath("$.path").isEqualTo("/product/" + productIdInvalid)
-      .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
+        .jsonPath("$.path").isEqualTo("/product/" + productIdInvalid)
+        .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
   }
 
   private WebTestClient.BodyContentSpec getAndVerifyProduct(int productId, HttpStatus expectedStatus) {
@@ -122,12 +121,12 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
 
   private WebTestClient.BodyContentSpec getAndVerifyProduct(String productIdPath, HttpStatus expectedStatus) {
     return client.get()
-      .uri("/product" + productIdPath)
-      .accept(APPLICATION_JSON)
-      .exchange()
-      .expectStatus().isEqualTo(expectedStatus)
-      .expectHeader().contentType(APPLICATION_JSON)
-      .expectBody();
+        .uri("/product" + productIdPath)
+        .accept(APPLICATION_JSON)
+        .exchange()
+        .expectStatus().isEqualTo(expectedStatus)
+        .expectHeader().contentType(APPLICATION_JSON)
+        .expectBody();
   }
 
   private void sendCreateProductEvent(int productId) {

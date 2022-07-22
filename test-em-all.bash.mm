@@ -310,7 +310,7 @@ fi
 # Local authorization server
 # Acquire a writer (read and write scopes) access token using the password grant flow 
 
-# Re-enabled local authorization server token retrieval because Auth0 didn't seem to work for accessing the config server API
+# Re-enabled local authorization server token retrieval because Auth0 didnt seem to work for accessing the config server API
 # to retrieve config data through HTTP basic authentication in the header (pg. 357)
 
 echo "About to invoke curl command to get access token from authorization server..."

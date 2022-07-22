@@ -31,7 +31,9 @@ import org.springframework.test.web.servlet.MockMvc;
  *
  * @author Josh Cummings
  */
-@SpringBootTest(properties = {"spring.cloud.config.enabled=false"})
+// @SpringBootTest(properties = {"spring.cloud.config.enabled=false"})
+@SpringBootTest
+
 @AutoConfigureMockMvc
 class OAuth2AuthorizationServerApplicationTests {
 
@@ -42,8 +44,8 @@ class OAuth2AuthorizationServerApplicationTests {
   void requestTokenUsingClientCredentialsGrantType() throws Exception {
 
     this.mvc.perform(post("/oauth2/token")
-      .param("grant_type", "client_credentials")
-      .header("Authorization", "Basic cmVhZGVyOnNlY3JldA=="))
+        .param("grant_type", "client_credentials")
+        .header("Authorization", "Basic cmVhZGVyOnNlY3JldA=="))
         .andExpect(status().isOk());
   }
 
@@ -62,4 +64,4 @@ class OAuth2AuthorizationServerApplicationTests {
   }
 
 }
-//CHECKSTYLE:ON
+// CHECKSTYLE:ON

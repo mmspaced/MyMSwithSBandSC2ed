@@ -13,8 +13,8 @@
 : ${PROD_ID_NO_REVS=213}
 : ${SKIP_CB_TESTS=false}
 : ${NAMESPACE=hands-on}
-: ${CONFIG_SERVER_USR=dev-usr}
-: ${CONFIG_SERVER_PWD=dev-pwd}
+# : ${CONFIG_SERVER_USR=dev-usr}
+# : ${CONFIG_SERVER_PWD=dev-pwd}
 
 function assertCurl() {
 
@@ -239,8 +239,8 @@ echo "Start Tests: $(date)"
 
 echo "HOST=${HOST}"
 echo "PORT=${PORT}"
-echo "CONFIG_SERVER_USR=${CONFIG_SERVER_USR}"
-echo "CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}"
+# echo "CONFIG_SERVER_USR=${CONFIG_SERVER_USR}"
+# echo "CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}"
 
 echo "USE_K8S=${USE_K8S}"
 echo "SKIP_CB_TESTS=${SKIP_CB_TESTS}"
@@ -261,11 +261,11 @@ echo WRITER_ACCESS_TOKEN=$ACCESS_TOKEN
 AUTH="-H \"Authorization: Bearer $ACCESS_TOKEN\""
 
 # Verify access to the Config server and that its encrypt/decrypt endpoints work
-assertCurl 200 "curl -H "accept:application/json" -k https://$CONFIG_SERVER_USR:$CONFIG_SERVER_PWD@$HOST:$PORT/config/product/docker -s"
-TEST_VALUE="hello world"
-ENCRYPTED_VALUE=$(curl -k https://$CONFIG_SERVER_USR:$CONFIG_SERVER_PWD@$HOST:$PORT/config/encrypt --data-urlencode "$TEST_VALUE" -s)
-DECRYPTED_VALUE=$(curl -k https://$CONFIG_SERVER_USR:$CONFIG_SERVER_PWD@$HOST:$PORT/config/decrypt -d $ENCRYPTED_VALUE -s)
-assertEqual "$TEST_VALUE" "$DECRYPTED_VALUE"
+# assertCurl 200 "curl -H "accept:application/json" -k https://$CONFIG_SERVER_USR:$CONFIG_SERVER_PWD@$HOST:$PORT/config/product/docker -s"
+# TEST_VALUE="hello world"
+# ENCRYPTED_VALUE=$(curl -k https://$CONFIG_SERVER_USR:$CONFIG_SERVER_PWD@$HOST:$PORT/config/encrypt --data-urlencode "$TEST_VALUE" -s)
+# DECRYPTED_VALUE=$(curl -k https://$CONFIG_SERVER_USR:$CONFIG_SERVER_PWD@$HOST:$PORT/config/decrypt -d $ENCRYPTED_VALUE -s)
+# assertEqual "$TEST_VALUE" "$DECRYPTED_VALUE"
 
 setupTestdata
 
@@ -319,7 +319,7 @@ assertCurl 200 "curl -ksL https://$HOST:$PORT/openapi/swagger-ui.html"
 assertCurl 200 "curl -ks  https://$HOST:$PORT/openapi/webjars/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config"
 assertCurl 200 "curl -ks  https://$HOST:$PORT/openapi/v3/api-docs"
 assertEqual "3.0.1" "$(echo $RESPONSE | jq -r .openapi)"
-assertEqual "https://$HOST:$PORT" "$(echo $RESPONSE | jq -r .servers[].url)"
+# assertEqual "https://$HOST:$PORT" "$(echo $RESPONSE | jq -r .servers[].url)"
 assertCurl 200 "curl -ks  https://$HOST:$PORT/openapi/v3/api-docs.yaml"
 
 if [[ $SKIP_CB_TESTS == "false" ]]
