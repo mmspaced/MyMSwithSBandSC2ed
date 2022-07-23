@@ -14,11 +14,11 @@ cp ./config-repo/product-composite.yml ./kubernetes/helm/components/product-comp
 cp ./config-repo/recommendation.yml ./kubernetes/helm/components/recommendation/config-repo/
 cp ./config-repo/review.yml ./kubernetes/helm/components/review/config-repo/
 
-cp ./kubernetes/helm/components/rabbitmq/values-dev.yaml ./kubernetes/helm/components/rabbitmq/values.yaml
-echo "Copied header authorization credentials for dev environment to the RabbitMQ component's values.yaml file..."
+cp ./kubernetes/helm/components/rabbitmq/values-prod.yaml ./kubernetes/helm/components/rabbitmq/values.yaml
+echo "Copied header authorization credentials for prod environment to the RabbitMQ component's values.yaml file..."
 
-cp .env-dev .env
-echo "Copied the dev environment variables to the env file..."
+cp .env-prod .env
+echo "Copied the prod environment variables to the env file..."
 
 minikube delete -p minikube
 
@@ -34,8 +34,8 @@ kubectl get pods --namespace cert-manager
 # kubectl get certificates -w --output-watch-events
 
 # Use the appropriate docker-compose file for development 
-cp docker-compose-dev.yml docker-compose.yml
-echo "Copied docker-compose-dev.yml to docker-compose.yml for development"
+cp docker-compose-prod.yml docker-compose.yml
+echo "Copied docker-compose-prod.yml to docker-compose.yml for development"
 
 eval $(minikube docker-env)
 
@@ -45,16 +45,22 @@ kubectl config set-context $(kubectl config current-context) --namespace=hands-o
 
 ./gradlew build && docker-compose build
 
+docker tag hands-on/auth-server hands-on/auth-server:v1
+docker tag hands-on/product-composite-service hands-on/product-composite-service:v1
+docker tag hands-on/product-service hands-on/product-service:v1
+docker tag hands-on/recommendation-service hands-on/recommendation-service:v1
+docker tag hands-on/review-service hands-on/review-service:v1
+
 for f in kubernetes/helm/components/*; do helm dep up $f; done
 for f in kubernetes/helm/environments/*; do helm dep up $f; done
-helm dep ls kubernetes/helm/environments/dev-env/
+helm dep ls kubernetes/helm/environments/prod-env/
 
 docker pull arm64v8/mysql:8.0.29-oracle
 docker pull mongo:latest
 docker pull rabbitmq:latest
 docker pull openzipkin/zipkin:latest
 
-helm install hands-on-dev-env kubernetes/helm/environments/dev-env -n hands-on --create-namespace
+helm install hands-on-prod-env kubernetes/helm/environments/prod-env -n hands-on --create-namespace
 
 kubectl wait --timeout=600s --for=condition=ready pod --all
 
@@ -63,6 +69,4 @@ kubectl get pods -o json | jq '.items[].spec.containers[].image'
 
 MINIKUBE_HOST=127.0.0.1
 
-# HOST=$MINIKUBE_HOST PORT=30443 USE_K8S=true ./test-em-all.bash
-
-HOST=minikube.me PORT=8443 USE_K8S=true ./test-em-all.bash
+CONFIG_SERVER_USR=prod-usr CONFIG_SERVER_PWD=prod-pwd HOST=minikube.me PORT=8443 USE_K8S=true ./test-em-all.bash

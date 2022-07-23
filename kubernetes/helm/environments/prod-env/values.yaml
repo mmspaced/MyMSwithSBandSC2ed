@@ -17,6 +17,10 @@ ingress:
       service: product-composite
 
 secrets:
+  rabbitmq-server-credentials:
+    RABBITMQ_DEFAULT_USER: rabbit-user-prod
+    RABBITMQ_DEFAULT_PASS: rabbit-pwd-prod
+
   rabbitmq-credentials:
     SPRING_RABBITMQ_USERNAME: rabbit-user-prod
     SPRING_RABBITMQ_PASSWORD: rabbit-pwd-prod
@@ -25,10 +29,20 @@ secrets:
     RABBIT_USER: rabbit-user-prod
     RABBIT_PASSWORD: rabbit-pwd-prod
 
+  mongodb-server-credentials:
+    MONGO_INITDB_ROOT_USERNAME: mongodb-user-prod
+    MONGO_INITDB_ROOT_PASSWORD: mongodb-pwd-prod
+
   mongodb-credentials:
     SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: admin
     SPRING_DATA_MONGODB_USERNAME: mongodb-user-prod
     SPRING_DATA_MONGODB_PASSWORD: mongodb-pwd-prod
+
+  mysql-server-credentials:
+    MYSQL_ROOT_PASSWORD: rootpwd
+    MYSQL_DATABASE: review-db
+    MYSQL_USER: mysql-user-prod
+    MYSQL_PASSWORD: mysql-pwd-prod
 
   mysql-credentials:
     SPRING_DATASOURCE_USERNAME: mysql-user-prod
@@ -113,14 +127,16 @@ product-composite:
       memory: 200Mi
     limits:
       memory: 400Mi
-# zipkin-server:
-#   env:
-#     LOGGING_LEVEL_ROOT: WARN
-#     # RABBIT_ADDRESSES: 172.17.0.1
-#   envFromSecretRefs:
-#     - rabbitmq-zipkin-credentials
-#   resources:
-#     requests:
-#       memory: 300Mi
-#     limits:
-#       memory: 600Mi
+
+zipkin-server:
+  env:
+    LOGGING_LEVEL_ROOT: WARN
+    # RABBIT_ADDRESSES: 127.0.0.1
+    # RABBIT_ADDRESSES: 172.17.0.1
+  envFromSecretRefs:
+    - rabbitmq-zipkin-credentials
+  resources:
+    requests:
+      memory: 300Mi
+    limits:
+      memory: 600Mi

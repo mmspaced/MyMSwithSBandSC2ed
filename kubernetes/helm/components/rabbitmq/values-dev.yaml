@@ -20,9 +20,9 @@ readinessProbe:
     httpHeaders:
       - name: Authorization
         # dev credentials
-        # value: Basic cmFiYml0LXVzZXItZGV2OnJhYmJpdC1wd2QtZGV2
+        value: Basic cmFiYml0LXVzZXItZGV2OnJhYmJpdC1wd2QtZGV2
         # prod credentials
-        value: Basic cmFiYml0LXVzZXItcHJvZDpyYWJiaXQtcHdkLXByb2Q=
+        # value: Basic cmFiYml0LXVzZXItcHJvZDpyYWJiaXQtcHdkLXByb2Q=
   initialDelaySeconds: 10
   periodSeconds: 5
   timeoutSeconds: 3
