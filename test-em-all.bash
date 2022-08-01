@@ -254,6 +254,13 @@ then
   docker-compose up -d
 fi
 
+if [[ $@ == *"kafka"* ]]
+then
+  echo "Sleeping for 2 sec. to allow the Kafka/Zookeeper containers to complete initializaiton..."
+  sleep 2
+  # read -p "Press any key to continue..."
+fi
+
 waitForService curl -k https://$HOST:$PORT/actuator/health
 
 ACCESS_TOKEN=$(curl -k https://writer:secret@$HOST:$PORT/oauth2/token -d grant_type=client_credentials -s | jq .access_token -r)
@@ -266,6 +273,9 @@ AUTH="-H \"Authorization: Bearer $ACCESS_TOKEN\""
 # ENCRYPTED_VALUE=$(curl -k https://$CONFIG_SERVER_USR:$CONFIG_SERVER_PWD@$HOST:$PORT/config/encrypt --data-urlencode "$TEST_VALUE" -s)
 # DECRYPTED_VALUE=$(curl -k https://$CONFIG_SERVER_USR:$CONFIG_SERVER_PWD@$HOST:$PORT/config/decrypt -d $ENCRYPTED_VALUE -s)
 # assertEqual "$TEST_VALUE" "$DECRYPTED_VALUE"
+
+# echo "Due to Kafka behavior, initiating this curl command, which we expect to fail with HTTP 500..."
+# curl -X DELETE $AUTH -k https://$HOST:$PORT/product-composite/${productId} -s
 
 setupTestdata
 

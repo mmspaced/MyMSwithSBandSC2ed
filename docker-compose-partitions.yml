@@ -6,8 +6,10 @@ services:
     image: hands-on/product-service
     mem_limit: 512m
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0,kafka
+      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/product.yml
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
       - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
       - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
       - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
@@ -16,16 +18,18 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-      kafka:
-        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
   product-p1:
     build: microservices/product-service
     image: hands-on/product-service
     mem_limit: 512m
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1,kafka
+      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/product.yml
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
       - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
       - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
       - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
@@ -34,16 +38,18 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-      kafka:
-        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
   recommendation:
     build: microservices/recommendation-service
     image: hands-on/recommendation-service
     mem_limit: 512m
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0,kafka
+      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/recommendation.yml
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
       - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
       - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
       - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
@@ -52,16 +58,18 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-      kafka:
-        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
   recommendation-p1:
     build: microservices/recommendation-service
     image: hands-on/recommendation-service
     mem_limit: 512m
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1,kafka
+      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/recommendation.yml
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
       - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
       - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
       - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
@@ -70,16 +78,18 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-      kafka:
-        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
   review:
     build: microservices/review-service
     image: hands-on/review-service
     mem_limit: 512m
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0,kafka
+      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/review.yml
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USR}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PWD}
     volumes:
@@ -87,16 +97,18 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      kafka:
-        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
   review-p1:
     build: microservices/review-service
     image: hands-on/review-service
     mem_limit: 512m
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1,kafka
+      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/review.yml
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USR}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PWD}
     volumes:
@@ -104,21 +116,23 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      kafka:
-        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
   product-composite:
     build: microservices/product-composite-service
     image: hands-on/product-composite-service
     mem_limit: 512m
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,kafka
+      - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/product-composite.yml
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     depends_on:
-      kafka:
-        condition: service_started
+      rabbitmq:
+        condition: service_healthy
       auth-server:
         condition: service_healthy
 
@@ -155,37 +169,31 @@ services:
       timeout: 2s
       retries: 60
 
-  kafka:
-    # image: wurstmeister/kafka:2.12-2.5.0
-    image: wurstmeister/kafka:latest
+  rabbitmq:
+    image: rabbitmq:3.8.11-management
     mem_limit: 512m
     ports:
-      - "9092:9092"
+      - 5672:5672
+      - 15672:15672
     environment:
-      - KAFKA_ADVERTISED_HOST_NAME=kafka
-      - KAFKA_ADVERTISED_PORT=9092
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      
-    depends_on:
-      - zookeeper
-
-  zookeeper:
-    # image: wurstmeister/zookeeper:3.4.6
-    image: wurstmeister/zookeeper:latest
-    mem_limit: 512m
-    ports:
-      - "2181:2181"
-    environment:
-      - KAFKA_ADVERTISED_HOST_NAME=zookeeper
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USR}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PWD}
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 2s
+      retries: 60
 
   gateway:
     build: spring-cloud/gateway
     image: hands-on/gateway
     mem_limit: 512m
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,kafka
+      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/gateway.yml
       - SERVER_SSL_KEY_STORE_PASSWORD=${GATEWAY_TLS_PWD}
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     ports:
@@ -199,8 +207,10 @@ services:
     image: hands-on/auth-server
     mem_limit: 512m
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,kafka
+      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/auth-server.yml
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     healthcheck:
@@ -214,8 +224,11 @@ services:
     mem_limit: 1024m
     environment:
       - STORAGE_TYPE=mem
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - RABBIT_ADDRESSES=rabbitmq
+      - RABBIT_USER=${RABBITMQ_USR}
+      - RABBIT_PASSWORD=${RABBITMQ_PWD}
     ports:
       - 9411:9411
     depends_on:
-      - kafka
+      rabbitmq:
+        condition: service_healthy

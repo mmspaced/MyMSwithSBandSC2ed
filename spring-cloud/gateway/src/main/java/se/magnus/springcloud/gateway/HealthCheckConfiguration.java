@@ -30,22 +30,22 @@ public class HealthCheckConfiguration {
 
     final Map<String, ReactiveHealthIndicator> registry = new LinkedHashMap<>();
 
-    registry.put("product",           () -> getHealth("http://product"));
-    registry.put("recommendation",    () -> getHealth("http://recommendation"));
-    registry.put("review",            () -> getHealth("http://review"));
+    registry.put("product", () -> getHealth("http://product"));
+    registry.put("recommendation", () -> getHealth("http://recommendation"));
+    registry.put("review", () -> getHealth("http://review"));
     registry.put("product-composite", () -> getHealth("http://product-composite"));
-    registry.put("auth-server",       () -> getHealth("http://auth-server"));
+    registry.put("auth-server", () -> getHealth("http://auth-server"));
 
     return CompositeReactiveHealthContributor.fromMap(registry);
   }
 
   private Mono<Health> getHealth(String baseUrl) {
     String url = baseUrl + "/actuator/health";
-    LOG.debug("Setting up a call to the Health API on URL: {}", url);
+    LOG.info("Setting up a call to the Health API on URL: {}", url);
     return webClient.get().uri(url).retrieve().bodyToMono(String.class)
-      .map(s -> new Health.Builder().up().build())
-      .onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build()))
-      .log(LOG.getName(), FINE);
+        .map(s -> new Health.Builder().up().build())
+        .onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build()))
+        .log(LOG.getName(), FINE);
   }
 
 }

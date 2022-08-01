@@ -54,11 +54,6 @@ public class ProductCompositeServiceApplication {
    */
   @Bean
   public OpenAPI getOpenApiDocumentation() {
-    System.out.println("***********************************");
-    System.out.println("***********************************");
-    System.out.println("api.common.version = " + apiVersion);
-    System.out.println("***********************************");
-    System.out.println("***********************************");
     return new OpenAPI()
         .info(new Info().title(apiTitle)
             .description(apiDescription)
