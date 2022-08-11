@@ -1,5 +1,8 @@
 fullnameOverride: mysql
 
+annotations:
+  sidecar.istio.io/inject: "false"
+
 image:
   repository: registry.hub.docker.com/library
   # name: arm64v8/mysql

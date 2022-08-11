@@ -82,7 +82,9 @@ review:
 product-composite:
   envFromSecretRefs:
     - rabbitmq-credentials
-
-zipkin-server:
-  envFromSecretRefs:
-    - rabbitmq-zipkin-credentials
+# destinationRules:
+#   - name: product-composite
+#   - name: auth-server
+#   - name: product
+#   - name: recommendation
+#   - name: review
