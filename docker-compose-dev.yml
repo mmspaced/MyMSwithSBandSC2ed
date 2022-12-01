@@ -50,12 +50,12 @@ services:
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/review.yml
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USR}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PWD}    
+      - SPRING_DATASOURCE_USERNAME=${MARIADB_USR}
+      - SPRING_DATASOURCE_PASSWORD=${MARIADB_PWD}    
     volumes:
       - $PWD/config-repo:/config-repo  
     depends_on:
-      mysql:
+      mariadb:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -92,20 +92,18 @@ services:
       timeout: 2s
       retries: 60
 
-  mysql:
-    image: arm64v8/mysql:8.0.29-oracle
-    platform: linux/arm64/v8
-    restart: always
+  mariadb:
+    image: arm64v8/mariadb:10.8.3
     mem_limit: 512m
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PWD}
-      - MYSQL_DATABASE=review-db
-      - MYSQL_USER=${MYSQL_USR}
-      - MYSQL_PASSWORD=${MYSQL_PWD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PWD}
+      - MARIADB_DATABASE=review-db
+      - MARIADB_USER=${MARIADB_USR}
+      - MARIADB_PASSWORD=${MARIADB_PWD}
     healthcheck:
-      test: "/usr/bin/mysql --user=${MYSQL_USR} --password=${MYSQL_PWD} --execute \"SHOW DATABASES;\""
+      test: "/usr/bin/mysql --user=${MARIADB_USR} --password=${MARIADB_PWD} --execute \"SHOW DATABASES;\""
       interval: 5s
       timeout: 2s
       retries: 60

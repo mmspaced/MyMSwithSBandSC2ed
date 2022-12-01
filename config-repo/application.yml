@@ -16,7 +16,7 @@ spring.cloud.stream.defaultBinder: rabbit
 spring.sleuth.sampler.probability: 1.0
 
 # WARNING: Exposing all management endpoints over http should only be used during development, must be locked down in production!
-# management.server.port: 4004
+management.server.port: 4004
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
 management.endpoint.health.probes.enabled: true

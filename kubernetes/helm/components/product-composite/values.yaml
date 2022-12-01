@@ -3,14 +3,13 @@ fullnameOverride: product-composite
 image:
   name: product-composite-service
 
-# Is this needed?
-# ports:
-#   - name: http
-#     containerPort: 80
-#     protocol: TCP
-#   - name: http-mgm
-#     containerPort: 4004
-#     protocol: TCP
+ports:
+  - name: http
+    containerPort: 80
+    protocol: TCP
+  - name: http-mgm
+    containerPort: 4004
+    protocol: TCP
 
 env:
   SPRING_PROFILES_ACTIVE: "docker"
@@ -25,11 +24,11 @@ configmap:
   volumeMounts:
     mountPath: /config-repo
 
-# service:
-#   ports:
-#     - port: 80
-#       name: http
-#       targetPort: 80
-#     - port: 4004
-#       name: http-mgm
-#       targetPort: 4004
+service:
+  ports:
+    - port: 80
+      name: http
+      targetPort: 80
+    - port: 4004
+      name: http-mgm
+      targetPort: 4004

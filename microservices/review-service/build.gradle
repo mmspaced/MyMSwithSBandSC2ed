@@ -31,7 +31,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.retry:spring-retry'
-    implementation 'mysql:mysql-connector-java'
+
+    // implementation 'mysql:mysql-connector-java'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.7'
+    // implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+    
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
 
     compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"
@@ -44,7 +48,9 @@ dependencies {
     implementation platform('org.testcontainers:testcontainers-bom:1.15.2')
     testImplementation 'org.testcontainers:testcontainers'
     testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:mysql'
+    // testImplementation 'org.testcontainers:mysql'
+    testImplementation 'org.testcontainers:mariadb:1.17.3'
+    // testImplementation 'org.testcontainers:mariadb'
 }
 
 dependencyManagement {

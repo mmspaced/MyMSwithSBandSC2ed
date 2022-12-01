@@ -17,9 +17,13 @@ dependencies:
     version: 1.0.0
     repository: file://../../components/mongodb
 
-  - name: mysql
+  # - name: mysql
+  #   version: 1.0.0
+  #   repository: file://../../components/mysql
+
+  - name: mariadb
     version: 1.0.0
-    repository: file://../../components/mysql
+    repository: file://../../components/mariadb
 
   - name: auth-server
     version: 1.0.0

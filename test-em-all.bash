@@ -7,6 +7,8 @@
 : ${HOST=localhost}
 : ${PORT=8443}
 : ${USE_K8S=false}
+: ${HEALTH_URL=https://health.minikube.me}
+: ${MGM_PORT=4004}
 : ${PROD_ID_REVS_RECS=1}
 : ${PROD_ID_NOT_FOUND=13}
 : ${PROD_ID_NO_RECS=113}
@@ -183,7 +185,8 @@ function testCircuitBreaker() {
     fi
 
     # First, use the health - endpoint to verify that the circuit breaker is closed
-    assertEqual "CLOSED" "$($EXEC curl -s http://localhost/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
+#    assertEqual "CLOSED" "$($EXEC curl -s http://localhost/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
+    assertEqual "CLOSED" "$($EXEC curl -s http://localhost:${MGM_PORT}/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
 
     # Open the circuit breaker by running three slow calls in a row, i.e. that cause a timeout exception
     # Also, verify that we get 500 back and a timeout related error message
@@ -195,7 +198,8 @@ function testCircuitBreaker() {
     done
 
     # Verify that the circuit breaker is open
-    assertEqual "OPEN" "$($EXEC curl -s http://localhost/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
+#    assertEqual "OPEN" "$($EXEC curl -s http://localhost/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
+    assertEqual "OPEN" "$($EXEC curl -s http://localhost:${MGM_PORT}/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
 
     # Verify that the circuit breaker now is open by running the slow call again, verify it gets 200 back, i.e. fail fast works, and a response from the fallback method.
     assertCurl 200 "curl -k https://$HOST:$PORT/product-composite/$PROD_ID_REVS_RECS?delay=3 $AUTH -s"
@@ -214,7 +218,8 @@ function testCircuitBreaker() {
     sleep 10
 
     # Verify that the circuit breaker is in half open state
-    assertEqual "HALF_OPEN" "$($EXEC curl -s http://localhost/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
+#    assertEqual "HALF_OPEN" "$($EXEC curl -s http://localhost/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
+    assertEqual "HALF_OPEN" "$($EXEC curl -s http://localhost:${MGM_PORT}/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
 
     # Close the circuit breaker by running three normal calls in a row
     # Also, verify that we get 200 back and a response based on information in the product database
@@ -225,12 +230,16 @@ function testCircuitBreaker() {
     done
 
     # Verify that the circuit breaker is in closed state again
-    assertEqual "CLOSED" "$($EXEC curl -s http://localhost/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
+#    assertEqual "CLOSED" "$($EXEC curl -s http://localhost/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
+    assertEqual "CLOSED" "$($EXEC curl -s http://localhost:${MGM_PORT}/actuator/health | jq -r .components.circuitBreakers.details.product.details.state)"
 
     # Verify that the expected state transitions happened in the circuit breaker
-    assertEqual "CLOSED_TO_OPEN"      "$($EXEC curl -s http://localhost/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r .circuitBreakerEvents[-3].stateTransition)"
-    assertEqual "OPEN_TO_HALF_OPEN"   "$($EXEC curl -s http://localhost/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r .circuitBreakerEvents[-2].stateTransition)"
-    assertEqual "HALF_OPEN_TO_CLOSED" "$($EXEC curl -s http://localhost/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r .circuitBreakerEvents[-1].stateTransition)"
+#    assertEqual "CLOSED_TO_OPEN"      "$($EXEC curl -s http://localhost/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r .circuitBreakerEvents[-3].stateTransition)"
+#    assertEqual "OPEN_TO_HALF_OPEN"   "$($EXEC curl -s http://localhost/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r .circuitBreakerEvents[-2].stateTransition)"
+#    assertEqual "HALF_OPEN_TO_CLOSED" "$($EXEC curl -s http://localhost/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r .circuitBreakerEvents[-1].stateTransition)"
+    assertEqual "CLOSED_TO_OPEN"      "$($EXEC curl -s http://localhost:${MGM_PORT}/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r .circuitBreakerEvents[-3].stateTransition)"
+    assertEqual "OPEN_TO_HALF_OPEN"   "$($EXEC curl -s http://localhost:${MGM_PORT}/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r .circuitBreakerEvents[-2].stateTransition)"
+    assertEqual "HALF_OPEN_TO_CLOSED" "$($EXEC curl -s http://localhost:${MGM_PORT}/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r .circuitBreakerEvents[-1].stateTransition)"
 }
 
 set -e
@@ -261,7 +270,8 @@ then
   # read -p "Press any key to continue..."
 fi
 
-waitForService curl -k https://$HOST:$PORT/actuator/health
+# waitForService curl -k https://$HOST:$PORT/actuator/health
+waitForService curl -k $HEALTH_URL/actuator/health
 
 ACCESS_TOKEN=$(curl -k https://writer:secret@$HOST:$PORT/oauth2/token -d grant_type=client_credentials -s | jq .access_token -r)
 echo WRITER_ACCESS_TOKEN=$ACCESS_TOKEN

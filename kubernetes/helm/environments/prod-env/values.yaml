@@ -20,15 +20,25 @@ secrets:
     SPRING_DATA_MONGODB_USERNAME: mongodb-user-prod
     SPRING_DATA_MONGODB_PASSWORD: mongodb-pwd-prod
 
-  mysql-server-credentials:
-    MYSQL_ROOT_PASSWORD: rootpwd
-    MYSQL_DATABASE: review-db
-    MYSQL_USER: mysql-user-prod
-    MYSQL_PASSWORD: mysql-pwd-prod
+  # mysql-server-credentials:
+  #   MYSQL_ROOT_PASSWORD: rootpwd
+  #   MYSQL_DATABASE: review-db
+  #   MYSQL_USER: mysql-user-prod
+  #   MYSQL_PASSWORD: mysql-pwd-prod
 
-  mysql-credentials:
-    SPRING_DATASOURCE_USERNAME: mysql-user-prod
-    SPRING_DATASOURCE_PASSWORD: mysql-pwd-prod
+  # mysql-credentials:
+  #   SPRING_DATASOURCE_USERNAME: mysql-user-prod
+  #   SPRING_DATASOURCE_PASSWORD: mysql-pwd-prod
+
+  mariadb-server-credentials:
+    MARIADB_ROOT_PASSWORD: rootpwd
+    MARIADB_DATABASE: review-db
+    MARIADB_USER: mariadb-user-prod
+    MARIADB_PASSWORD: mariadb-pwd-prod
+
+  mariadb-credentials:
+    SPRING_DATASOURCE_USERNAME: mariadb-user-prod
+    SPRING_DATASOURCE_PASSWORD: mariadb-pwd-prod
 
 rabbitmq:
   envFromSecretRefs:
@@ -38,9 +48,13 @@ mongodb:
   envFromSecretRefs:
     - mongodb-server-credentials
 
-mysql:
+# mysql:
+#   envFromSecretRefs:
+#     - mysql-server-credentials
+
+mariadb:
   envFromSecretRefs:
-    - mysql-server-credentials
+    - mariadb-server-credentials
 
 auth-server:
   image:
@@ -90,7 +104,8 @@ review:
     SPRING_PROFILES_ACTIVE: "docker,prod"
   envFromSecretRefs:
     - rabbitmq-credentials
-    - mysql-credentials
+    # - mysql-credentials
+    - mariadb-credentials
   resources:
     requests:
       memory: 200Mi

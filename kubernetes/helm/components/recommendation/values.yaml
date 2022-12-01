@@ -11,6 +11,12 @@ livenessProbe_enabled: true
 
 readinessProbe_enabled: true
 
+spec:
+  template:
+    metadata:
+      labels:
+        sidecarInjection: enabled
+
 configmap:
   enabled: true
   volumeMounts:

@@ -38,15 +38,15 @@ secrets:
     SPRING_DATA_MONGODB_USERNAME: mongodb-user-dev
     SPRING_DATA_MONGODB_PASSWORD: mongodb-pwd-dev
 
-  mysql-server-credentials:
-    MYSQL_ROOT_PASSWORD: rootpwd
-    MYSQL_DATABASE: review-db
-    MYSQL_USER: mysql-user-dev
-    MYSQL_PASSWORD: mysql-pwd-dev
+  mariadb-server-credentials:
+    MARIADB_ROOT_PASSWORD: rootpwd
+    MARIADB_DATABASE: review-db
+    MARIADB_USER: mariadb-user-dev
+    MARIADB_PASSWORD: mariadb-pwd-dev
 
-  mysql-credentials:
-    SPRING_DATASOURCE_USERNAME: mysql-user-dev
-    SPRING_DATASOURCE_PASSWORD: mysql-pwd-dev
+  mariadb-credentials:
+    SPRING_DATASOURCE_USERNAME: mariadb-user-dev
+    SPRING_DATASOURCE_PASSWORD: mariadb-pwd-dev
 
 rabbitmq:
   envFromSecretRefs:
@@ -56,9 +56,9 @@ mongodb:
   envFromSecretRefs:
     - mongodb-server-credentials
 
-mysql:
+mariadb:
   envFromSecretRefs:
-    - mysql-server-credentials
+    - mariadb-server-credentials
 
 auth-server:
   envFromSecretRefs:
@@ -77,14 +77,8 @@ recommendation:
 review:
   envFromSecretRefs:
     - rabbitmq-credentials
-    - mysql-credentials
+    - mariadb-credentials
 
 product-composite:
   envFromSecretRefs:
     - rabbitmq-credentials
-# destinationRules:
-#   - name: product-composite
-#   - name: auth-server
-#   - name: product
-#   - name: recommendation
-#   - name: review

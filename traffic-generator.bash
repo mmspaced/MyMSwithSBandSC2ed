@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-: ${HOST=localhost}
+#: ${HOST=localhost}
 # : ${PORT=8080}
+: ${HOST=minikube.me}
 : ${PORT=8443}
 : ${PROD_ID_REVS_RECS=2}
+: ${ITERATIONS=500}
 
 function assertCurl() {
 
@@ -99,7 +101,7 @@ function setupTestdata() {
   echo "Writing the test data ..."
 
   n=2
-  until [ $n == 100 ] 
+  until [ $n == $ITERATIONS ]
     do
 
       echo "Creating entry for product ID = $n..."
@@ -134,7 +136,7 @@ function readAndValidateTestData() {
   # Verify that a normal request works, expect three recommendations and three reviews
 
   n=2
-  until [ $n == 100 ] 
+  until [ $n == $ITERATIONS ]
     do
 
       echo "Reading and validating entry for product ID = $n..."
@@ -157,6 +159,7 @@ echo "Start generating traffic....." $(date)
 
 echo "HOST=${HOST}"
 echo "PORT=${PORT}"
+echo "ITERATIONS=${ITERATIONS}"
 
 waitForService curl -k https://$HOST:$PORT/actuator/health
 

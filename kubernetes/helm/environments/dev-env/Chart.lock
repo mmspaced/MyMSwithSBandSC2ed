@@ -8,8 +8,8 @@ dependencies:
 - name: mongodb
   repository: file://../../components/mongodb
   version: 1.0.0
-- name: mysql
-  repository: file://../../components/mysql
+- name: mariadb
+  repository: file://../../components/mariadb
   version: 1.0.0
 - name: auth-server
   repository: file://../../components/auth-server
@@ -26,5 +26,5 @@ dependencies:
 - name: product-composite
   repository: file://../../components/product-composite
   version: 1.0.0
-digest: sha256:b4dbae4440d32efd11b058718704b78daa1bfdd6c5a665794cbeddd3be5af16e
-generated: "2022-08-08T11:43:01.805099-04:00"
+digest: sha256:62b72a8b01c859d4b6de40fde6b7b59bd6127ae48babd9eb3f2545fe3e42aa61
+generated: "2022-08-28T22:21:32.769276-04:00"

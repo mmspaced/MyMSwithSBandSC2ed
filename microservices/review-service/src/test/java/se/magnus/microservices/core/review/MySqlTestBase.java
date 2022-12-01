@@ -2,11 +2,11 @@ package se.magnus.microservices.core.review;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.MariaDBContainer;
 
 public abstract class MySqlTestBase {
   // private static MySQLContainer database = new MySQLContainer("mysql:5.7.32");
-  private static MySQLContainer database = new MySQLContainer("mysql:8.0.29-oracle");
+  private static MariaDBContainer database = new MariaDBContainer("mariadb:10.8.3");
 
   static {
     database.start();
